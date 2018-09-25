@@ -14,5 +14,7 @@ const mix = require('laravel-mix');
 mix.js('resources/js/bootstrap.js', 'public/js/bootstrap.js')
 mix.js('resources/js/products/app.js', 'public/js/products.js')
 mix.js('resources/js/categories/app.js', 'public/js/categories.js')
+mix.js('resources/js/deliveries/app.js', 'public/js/deliveries.js')
+mix.js('resources/js/shoppings/app.js', 'public/js/shoppings.js')
    .sass('resources/sass/app.scss', 'public/css')
     .extract(['vue']);

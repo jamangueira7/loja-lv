@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -14,7 +15,29 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::where('active','=',1)
+            ->orderBy('updated_at','desc')
+            ->with('category')
+            ->paginate(50);
+
+        return response()->json($products);
+    }
+
+    public function list($id)
+    {
+        $products = Product::where('active','=',1)
+            ->where('category_id','=',$id)
+            ->orderBy('updated_at','desc')
+            ->paginate(50);
+
+        $category = Category::where('id','=',$id)
+            ->paginate(50);
+
+        return response(
+            view('product.list',['result'=>$products, 'catetory'=>$category]),
+            200
+        );
+
     }
 
     /**
@@ -35,7 +58,39 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $product = new Product();
+        $product->name = $request->input('name');
+        $product->descripton = $request->input('descripton');
+        $product->image = $request->input('image');
+        $product->price = $request->input('price');
+        $product->category_id = $request->input('category_id');
+        $product->active = 1;
+        $product->save();
+
+        //return response()->json(['created' => 'success', 'data' =>$product]);
+        return response(
+            view('product.view',['result'=>$product,'created' => 'success']),
+            200
+        );
+
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        $product->name = $request->input('name');
+        $product->descripton = $request->input('descripton');
+        $product->image = $request->input('image');
+        $product->price = $request->input('price');
+        $product->category_id = $request->input('category_id');
+        $product->active = 1;
+        $product->update();
+
+        //return response()->json(['created' => 'success', 'data' =>$product]);
+        return response(
+            view('product.view',['result'=>$product,'created' => 'success']),
+            200
+        );
+
     }
 
     /**
@@ -46,30 +101,12 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
-    }
+        $products = Product::where('active','=',1)
+            ->orderBy('updated_at','desc')
+            ->with('category')
+            ->paginate(50);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
+        return response()->json($products);
     }
 
     /**
@@ -78,8 +115,12 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function delete($id)
     {
-        //
+        $products = Product::find($id);
+        $products->active = 0;
+        $products->save();
+
+        return view('product.index');
     }
 }

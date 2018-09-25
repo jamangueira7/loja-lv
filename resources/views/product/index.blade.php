@@ -10,10 +10,15 @@
             price="{{__('Price')}}"
             send="{{__('Send')}}"
             open="{{__('Open')}}"
+            buy="{{__('Buy')}}"
+            details="{{__('Details')}}"
+            category="{{__('Category')}}"
+            new-product="{{__('New Product')}}"
 
         >
             @include('layouts.default.preloader');
         </product>
+
     </div>
 @endsection
 

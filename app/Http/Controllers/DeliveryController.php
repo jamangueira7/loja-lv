@@ -12,9 +12,13 @@ class DeliveryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $deliveries = Delivery::where('user_id',$id)
+            ->orderBy('updated_at','desc')
+            ->paginate(50);
+
+        return response()->json($deliveries);
     }
 
     /**
@@ -35,7 +39,26 @@ class DeliveryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $delivery = new Delivery();
+        $delivery->name = $request->input('name');
+        $delivery->phone = $request->input('phone');
+        $delivery->street = $request->input('street');
+        $delivery->neighborhood = $request->input('neighborhood');
+        $delivery->state = $request->input('state');
+        $delivery->country = $request->input('country');
+        $delivery->postal_code = $request->input('postalcode');
+        $delivery->complement = $request->input('complement');
+        $delivery->number = $request->input('number');
+        $delivery->reference = $request->input('reference');
+        $delivery->user_id =  \Auth::user()->id;
+
+        $delivery->save();
+
+        //return response()->json(['created' => 'success', 'data' =>$delivery]);
+        return response(
+            view('delivery.index',['result'=>$delivery,'created' => 'success']),
+            200
+        );
     }
 
     /**
@@ -69,7 +92,24 @@ class DeliveryController extends Controller
      */
     public function update(Request $request, Delivery $delivery)
     {
-        //
+        $delivery->name = $request->input('name');
+        $delivery->phone = $request->input('phone');
+        $delivery->street = $request->input('street');
+        $delivery->neighborhood = $request->input('neighborhood');
+        $delivery->state = $request->input('state');
+        $delivery->country = $request->input('country');
+        $delivery->postal_code = $request->input('postalcode');
+        $delivery->complement = $request->input('complement');
+        $delivery->number = $request->input('number');
+        $delivery->reference = $request->input('reference');
+
+        $delivery->save();
+
+        //return response()->json(['created' => 'success', 'data' =>$delivery]);
+        return response(
+            view('delivery.index',['result'=>$delivery,'created' => 'success']),
+            200
+        );
     }
 
     /**

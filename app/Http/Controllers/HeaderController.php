@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Header;
+use App\Shopping;
 use Illuminate\Http\Request;
 
 class HeaderController extends Controller
@@ -14,7 +15,23 @@ class HeaderController extends Controller
      */
     public function index()
     {
-        //
+        $shoppings = Shopping::where('user_id','=',\Auth::user()->id)
+            ->orderBy('updated_at','desc')->get();
+
+        $codes = [];
+        $old = '';
+        foreach ($shoppings as $shopping){
+            if($shopping['code'] != $old || $old == ''){
+                $codes[] = $shopping['code'];
+            }
+            $old = $shopping['code'];
+        }
+
+        foreach ($codes as $codes){
+            $header[] = Header::where('code',$codes)
+                ->orderBy('updated_at','desc')->get();
+        }
+        return response()->json($header);
     }
 
     /**

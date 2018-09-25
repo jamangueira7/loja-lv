@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use Log;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,7 +15,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::where('active','=',1)
+            ->orderBy('updated_at','desc')
+            ->paginate(50);
+
+        return response()->json($categories);
     }
 
     /**
@@ -35,7 +40,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $category = new Category();
+        $category->name = $request->input('name');
+        $category->descripton = $request->input('descripton');
+        $category->active = 1;
+        $category->save();
+
+        //return response()->json(['created' => 'success', 'data' =>$category]);
+        return response(
+            view('category.view',['result'=>$category,'created' => 'success']),
+            200
+        );
     }
 
     /**
@@ -46,7 +61,11 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $categories = Category::where('active','=',1)
+            ->orderBy('updated_at','desc')
+            ->paginate(50);
+
+        return response()->json($categories);
     }
 
     /**
@@ -69,7 +88,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $category->name = $request->input('name');
+        $category->descripton = $request->input('descripton');
+        $category->update();
+
+        //return response()->json(['created' => 'success', 'data' =>$category]);
+        return response(
+            view('category.view',['result'=>$category,'created' => 'success']),
+            200
+        );
     }
 
     /**
@@ -78,8 +105,12 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function delete($id)
     {
-        //
+        $category = Category::find($id);
+        $category->active = 0;
+        $category->save();
+
+        return view('category.index');
     }
 }

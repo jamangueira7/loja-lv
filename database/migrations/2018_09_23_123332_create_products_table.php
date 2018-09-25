@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->text('descripton');
             $table->string('image');
             $table->decimal('price');
+            $table->integer('active');
             $table->integer('category_id')->unsigned();
             $table->timestamps();
 

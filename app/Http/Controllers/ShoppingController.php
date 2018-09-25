@@ -14,7 +14,10 @@ class ShoppingController extends Controller
      */
     public function index()
     {
-        //
+        $shoppings = Shopping::orderBy('code','desc')
+            ->paginate(50);
+
+        return response()->json($shoppings);
     }
 
     /**
@@ -44,9 +47,13 @@ class ShoppingController extends Controller
      * @param  \App\Shopping  $shopping
      * @return \Illuminate\Http\Response
      */
-    public function show(Shopping $shopping)
+    public function show()
     {
-        //
+        $shoppings = Shopping::join('products','shoppings.product_id','products.id')
+        ->where('user_id','=',\Auth::user()->id)
+        ->orderBy('code','desc')->get();
+
+        return response()->json($shoppings);
     }
 
     /**
